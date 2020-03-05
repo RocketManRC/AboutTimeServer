@@ -51,3 +51,11 @@ The data output to the terminal is as follows:
                 clock. The idea is to get the change in this to be as small as possible.
     'taac'  ->  this is the estimated time accuracy in nanoseconds from the GPS.
     'numsv' ->  the number of satellites used in the GPS solution. More than 6 is good.
+
+# Packaging
+
+Nothing fancy here, just stuffed in a plastic box that was the packaging for a R/C servo:
+
+![Photo](images/abouttimeserver1.jpg)
+
+![Photo](images/abouttimeserver2.jpg)
