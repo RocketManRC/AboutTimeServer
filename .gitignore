@@ -1,0 +1,9 @@
+.pio
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.vscode
+.DS_Store
+.travis.yml
+0platformio.ini
