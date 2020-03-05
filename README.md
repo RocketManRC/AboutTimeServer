@@ -56,6 +56,6 @@ The data output to the terminal is as follows:
 
 Nothing fancy here, just stuffed in a plastic box that was the packaging for a R/C servo:
 
-![Photo](images/abouttimeserver1.jpg)
+![Photo](images/abouttimeserver1.jpeg)
 
-![Photo](images/abouttimeserver2.jpg)
+![Photo](images/abouttimeserver2.jpeg)
