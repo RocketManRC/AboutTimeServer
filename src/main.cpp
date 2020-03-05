@@ -1,21 +1,26 @@
 /*
   AboutTimeServer
 
-  Initialize the RTC and calibrate the ageing registers of a DS3231 module using GPS as a reference.
+  This is a system to initialize and calibrate the ageing registers of a DS3231 RTC module using GPS as a reference.
+  It also can be used as a time reference source via USB in conjunction with the PC application AboutTimeClient
+  which is at https://github.com/RocketManRC/AboutTimeClient.
 
-  This uses my u-blox-m8 library which is optimized for timing applications.
+  This uses my u-blox-m8 library which is optimized for timing applications:
+
+  https://github.com/RocketManRC/u-blox-m8 (automatically downloaded and installed by PlatformIO).
 
   This runs on the Teensy LC (and most likely Teensy 3.x or 4.x). The U/I is entirely
-  via the Serial port.
+  via the USB Serial port.
 
-  It requires a M8 GPS with PPS (optional) with the following connections:
+  It requires a u-blox M8 GPS with PPS (optional) with the following connections:
 
   GPS tx  -> pin 0
   GPS rx  -> pin 1
   GPS PPS -> pin 2
 
   If you don't have a PPS connection then set the USEPPS define to 0. This will cause
-  about +- 5ms of error in the initialzation of the DS3231.
+  about +- 5ms of error in the initialzation of the DS3231 and and about the same amount 
+  of jitter in the reference data coming over the USB serial port.
 
   The GPS is powered by 5V on pin Vin but the I/O is 3.3V
 

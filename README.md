@@ -1,60 +1,51 @@
-# AboutTimeClient
-A command line application to adjust the system clock on MacOS, Linux and Windows. This can be used standalone to modify the clock by an offset or it can synchronize to an external time source connected via a serial port. The time source could be a real time clock (RTC) module and/or GPS.
+# AboutTimeServer
+This is a system to initialize and calibrate the ageing registers of a DS3231 RTC module using GPS as a reference.
+It also can be used as a time reference source via USB in conjunction with the PC application AboutTimeClient
+which is at https://github.com/RocketManRC/AboutTimeClient.
 
-# Background
-I developed this cross platform application to assist with running the amateur radio digital communication programs JS8Call and WSJT-X when operating off the grid (i.e. with no internet connection). This is because those applications require the computer clock to be within 2 seconds of UTC.
+This uses my u-blox-m8 library which is optimized for timing applications:
 
-# Building the Application
-I am reluctant to publish binaries particularly for Windows so you have to build it yourself! The only requirement for building is a C++11 compiler and I have tested this with Mingw-x64 and the Microsoft command line tools on Windows. On Linux and MacOS g++ can be used directly as shown below (note that you have to install Xcode on MacOS even if you are only going to use the command line tools).
- 
-I use the following two platform independent libraries:
+https://github.com/RocketManRC/u-blox-m8 (automatically downloaded and installed by PlatformIO).
 
-    serial - https://github.com/yan9a/serial (serial port library)
-    cxxopts - https://github.com/jarro2783/cxxopts (command line parsing library)
- 
-Both of those libraries are licensed under the MIT license and are included in the repository.
- 
-Building on Windows with MS tools (from the developer command prompt):
+This runs on the Teensy LC (and most likely Teensy 3.x or 4.x). The U/I is entirely
+via the USB Serial port.
 
-    c:\Projects\AboutTimeClient> cl /EHsc main.cpp ceSerial.cpp /link /OUT:AboutTimeClient.exe
-    
-Building on Windows with mingw-x64 (from the command prompt after path is updated):
+It requires a u-blox M8 GPS with PPS (optional) with the following connections:
 
-    C:\Projects\AboutTimeClient> g++ main.cpp ceSerial.cpp -o AboutTimeClient.exe -std=c++11
-    
-Building on MacOS or Linux (including Raspian) from the terminal:
+GPS tx  -> pin 0
+GPS rx  -> pin 1
+GPS PPS -> pin 2
 
-    pi@RPi4BRadio:~/Projects/AboutTimeClient $ g++ main.cpp ceSerial.cpp -o AboutTimeClient -std=c++11
-        
-# Running the Application
-In order to set the clock this application has to be run with administor priviledges, this means run under a command prompt that has been opened to run as administrator on Windows and use sudo on MacOS or Linux.
+If you don't have a PPS connection then set the USEPPS define to 0. This will cause
+about +- 5ms of error in the initialzation of the DS3231 and and about the same amount 
+of jitter in the reference data coming over the USB serial port.
 
-The command line options are as follows:
+The GPS is powered by 5V on pin Vin but the I/O is 3.3V
 
-	-i, --init        False
-	-p, --port PORT   Port
-	-h, --help        Print help
-	-o, --offset arg  Offset
+Also a DS3231 module:
 
+DS3231 SQW -> pin 20
+DS3231 SCL -> pin 19
+DS3231 SDA -> pin 18
 
-The port option is only needed when syncing time to an external source (undocumented for now).
+The DS3231 is powered by 3.3V
 
-Here is an example to add 0.5 seconds to the clock:
+The commands on the serial terminal are:
+    'i' - initialize the RTC. This waits for the GPS to have more than 6 satellites and 
+            estimate time error of less than 100ns.
+    'o' - makes the RTC 5 seconds later than GPS. This is for testing.
+    'a' - read the ageing register (not really needed).
+    '+' - add one to the ageing register, max is 127
+    '-' - subtrack one from the ageing register. Max offset is 128 (starts at 255).
 
-	pi@RPi4BRadio:~/Projects/AboutTimeClient $ ./AboutTimeClient -i -o 0.5
-
-Note that if your computer is connected to the Internet and is using NTP to sync the clock then it most likely will change the time back right away.
-
-# AboutTimeClient in Action
-WSJT-X decoding FT8 and showing a time offset of about 1.1 seconds:
-
-![Photo](images/wsjtx1.png)
-
-Applying a -1.1 second correction:
-
-![Photo](images/abouttime1.png)
-
-WSJT-X after the time correction:
-
-![Photo](images/wsjtx2.png)
-
+The data output to the terminal is as follows:
+    'rt'    ->  the RTC time and date at the last SQW interrupt.
+    't'     ->  the GPS time at the last PPS interrupt.
+    'dt'    ->  the difference in microseconds between the SQW interrupt and the PPS interrupt.
+                This is circular so varies between 0 and 999999.
+    'dtt'   ->  the total difference in microseconds between SQW and PPS (+ or -).
+    'dcy'   ->  this is from a free running 16bit counter on Teensy LC and is the difference
+                between SQW and PPS. It give a little bit better feedback on the drifting of the 
+                clock. The idea is to get the change in this to be as small as possible.
+    'taac'  ->  this is the estimated time accuracy in nanoseconds from the GPS.
+    'numsv' ->  the number of satellites used in the GPS solution. More than 6 is good.
