@@ -30,6 +30,7 @@ DS3231 SDA -> pin 18
 
 The DS3231 is powered by 3.3V
 
+# Usage
 The commands on the serial terminal are:
 
     'i' - initialize the RTC. This waits for the GPS to have more than 6 satellites and 
@@ -54,7 +55,7 @@ The data output to the terminal is as follows:
 
 # Packaging
 
-Nothing fancy here, just stuffed in a plastic box that was the packaging for a R/C servo:
+Nothing fancy here, I just stuffed everything in a plastic box that was once the packaging for a large R/C servo:
 
 ![Photo](images/abouttimeserver1.jpeg)
 
