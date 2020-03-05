@@ -22,7 +22,7 @@ of jitter in the reference data coming over the USB serial port.
 
 The GPS is powered by 5V on pin Vin but the I/O is 3.3V
 
-Also a DS3231 module:
+Also required is a DS3231 module:
 
 DS3231 SQW -> pin 20
 DS3231 SCL -> pin 19
@@ -31,6 +31,7 @@ DS3231 SDA -> pin 18
 The DS3231 is powered by 3.3V
 
 The commands on the serial terminal are:
+
     'i' - initialize the RTC. This waits for the GPS to have more than 6 satellites and 
             estimate time error of less than 100ns.
     'o' - makes the RTC 5 seconds later than GPS. This is for testing.
@@ -39,6 +40,7 @@ The commands on the serial terminal are:
     '-' - subtrack one from the ageing register. Max offset is 128 (starts at 255).
 
 The data output to the terminal is as follows:
+
     'rt'    ->  the RTC time and date at the last SQW interrupt.
     't'     ->  the GPS time at the last PPS interrupt.
     'dt'    ->  the difference in microseconds between the SQW interrupt and the PPS interrupt.
